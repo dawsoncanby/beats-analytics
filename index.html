@@ -1,0 +1,44 @@
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+
+<script>
+
+let meta = []
+axios.get('beats_meta.json')
+		.then(resp => {
+				meta = resp.data
+
+				const dates = []
+				meta.forEach(e => {
+					const date = new Date(e.date)
+						const dateFmt = date.getMonth() + '-' + date.getDate() + '-' + date.getYear()
+						if (!dates[dateFmt]) {
+								dates[dateFmt] = 0
+						}
+						dates[dateFmt]++
+				})
+				  // === include 'setup' then 'config' above ===
+				const labels = Object.keys(dates)
+				const data = {
+				  labels: labels,
+				  datasets: [{
+					label: 'Beats',
+					backgroundColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(255, 99, 132)',
+					data: Object.values(dates)
+				  }]
+				};
+				  const chart = new Chart(
+					document.getElementById('myChart'),
+					{
+							type: 'line',
+							data,
+							options: {}
+					}
+				  )
+		})
+</script>
+
